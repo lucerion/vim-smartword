@@ -75,12 +75,38 @@ function! smartword#move(motion_command, mode)  "{{{2
   endif
 endfunction
 
+func! smartword#toggle() abort
+  let g:smartword_enabled = !g:smartword_enabled
+  call smartword#set_mappings()
+endfunc
 
+func! smartword#set_mappings() abort
+  let l:actions = {
+    \ 'w':  '<Plug>(smartword-w)',
+    \ 'b':  '<Plug>(smartword-b)',
+    \ 'e':  '<Plug>(smartword-e)',
+    \ 'ge': '<Plug>(smartword-ge)',
+    \ }
 
+  for [l:motion, l:action] in items(l:actions)
+    for l:mode in ['n', 'v', 'o']
+      let l:mapping = get(g:smartword_mappings, l:motion)
+      if !empty(l:mapping)
+        if g:smartword_enabled
+          exec l:mode.'map' l:mapping l:action
+        else
+          if mapcheck(l:mapping)
+            exec l:mode.'unmap' l:mapping
+          endif
+        endif
+      end
+    endfor
+  endfor
+endfunc
 
-
-
-
+func! smartword#status() abort
+  return '[SmartWord: ' . (get(g:, 'smartword_enabled', 0) ? 'on' : 'off') . ']'
+endfunc
 
 " Misc.  "{{{1
 function! s:current_char(pos)  "{{{2

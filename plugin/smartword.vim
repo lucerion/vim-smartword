@@ -49,8 +49,22 @@ noremap <Plug>(smartword-basic-b)  b
 noremap <Plug>(smartword-basic-e)  e
 noremap <Plug>(smartword-basic-ge)  ge
 
+if !exists('g:smartword_enabled')
+  let g:smartword_enabled = 0
+endif
 
+if !exists('g:smartword_mappings')
+  let g:smartword_mappings = {
+    \ 'w':  'w',
+    \ 'b':  'b',
+    \ 'e':  'e',
+    \ 'ge': 'ge'
+    \ }
+endif
 
+call smartword#set_mappings()
+
+comm! SmartWordToggle call smartword#toggle()
 
 let g:loaded_smartword = 1
 
